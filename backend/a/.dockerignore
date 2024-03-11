@@ -1,0 +1,11 @@
+# exclude hidden dirs .git etc.
+.*
+*.iml
+gradle
+build/*
+.project
+.gradle/
+bin/
+build/
+gradle/
+HELP.md

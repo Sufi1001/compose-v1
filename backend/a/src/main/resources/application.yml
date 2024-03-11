@@ -1,0 +1,97 @@
+spring:
+    profiles:
+        active: local,rabbitmq-config,sender
+    jpa:
+        database: POSTGRESQL
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibrnate:
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
+    datasource:
+        url: jdbc:postgresql://container-postgresql:5432/dblocal
+        #url: jdbc:postgresql://localhost:5432/kamran
+        username: postgres
+        password: postgres
+        driverClassName: org.postgresql.Driver
+    rabbitmq:
+        host: container-rabbitmq
+        #host: localhost
+        #port: 5672
+        username: guest
+        password: guest
+    mail:
+        host: container-mailserver
+        #host: localhost
+        port: 1025
+        protocl: smtp
+        user: springa@local.de
+        password: 
+        properties:
+            mail:
+                smtp:
+                    auth: false
+                    starttls:
+                        enable: true
+                    connectiontimeout: 5000
+                    timeout: 3000
+                    writetimeout: 5000
+        jndi-name: mail/Session
+name: local-YAML
+environment: local
+camunda:
+    bpm:
+        admin-user:
+            id: demo
+            password: demo
+            firstName: Demo
+        filter:
+            create: All tasks
+enabled: true
+servers: 
+    - www.abc.test.com
+    - www.xyz.test.com
+server:
+   port: 8090
+logging:
+    level:
+        org: ERROR
+tutorial:
+    client:
+        duration: 10000
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+name: dev-YAML
+environment: dev
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com
+---
+spring:
+    config:
+        activate:
+            on-profile: test
+name: test-YAML
+environment: test
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+name: prod-YAML
+environment: prod
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com

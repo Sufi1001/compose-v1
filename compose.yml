@@ -1,0 +1,109 @@
+version: '3.8'
+services:
+#  service-jenkins:
+#    image: image-jenkins
+#    container_name: container-jenkins
+#    restart: always
+#    build:
+#      context: ./config/docker/jenkins/
+#      dockerfile: ./Dockerfile
+#    ports: 
+#      - 49000:8080
+#
+#  service-nexus:
+#    image: image-nexus
+#    container_name: container-nexus
+#    restart: always
+#    build:
+#      context: ./config/docker/nexus/
+#      dockerfile: ./Dockerfile
+#    ports: 
+#      - 8081:8081
+#    depends_on:
+#      - service-jenkins
+
+  service-camunda:
+    image: image-camunda
+    container_name: container-camunda
+    restart: always
+    ports:
+      - 8080:8080
+    build:
+      context: ./config/docker/camunda/
+      dockerfile: ./Dockerfile
+#    depends_on:
+#      - service-nexus
+
+  service-postgresql:
+    image: image-postgresql
+    container_name: container-postgresql
+    ports:
+      - 5432:5432
+    build:
+      context: ./config/docker/postgresql/
+      dockerfile: ./Dockerfile
+    restart: always
+    depends_on:
+      - service-camunda
+      
+  service-rabbitmq:
+    image: image-rabbitmq
+    container_name: container-rabbitmq
+    build:
+      context: ./config/docker/rabbitmq/
+      dockerfile: ./Dockerfile-easy
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    depends_on:
+      - service-postgresql
+
+  service-mailserver:
+    image: image-mailserver
+    container_name: container-mailserver
+    ports:
+      - 1080:1080
+      - 1025:1025
+    build:
+      context: ./config/docker/mailserver/
+      dockerfile: ./Dockerfile
+    restart: always
+    depends_on:
+      - service-rabbitmq
+
+  service-springboota:
+    image: image-springboota
+    container_name: container-springboota
+    build:
+      context: ./backend/a/
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8090:8090
+    restart: always
+    depends_on:
+      - service-mailserver
+
+  service-springbootb:
+    image: image-springbootb
+    container_name: container-springbootb
+    build:
+      context: ./backend/b/
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8091:8091
+    restart: always
+    depends_on:
+       - service-springboota
+
+  service-angular:
+    image: image-angularcli
+    container_name: container-angularcli  
+    build:
+      context: ./frontend/a/
+      dockerfile: ./Dockerfile
+    ports: 
+      - 4200:4200
+    restart: always
+    depends_on:
+       - service-springbootb

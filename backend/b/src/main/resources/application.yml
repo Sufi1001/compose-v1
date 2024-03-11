@@ -1,0 +1,65 @@
+spring:
+    profiles:
+        active: local,rabbitmq-config,receiver
+    rabbitmq:
+        host: container-rabbitmq
+        #host: localhost
+        port: 5672
+    mail:
+        host: container-mailserver
+        #host: localhost
+        port: 1025
+        protocl: smtp
+        user: springb@local.de
+        password: 
+        properties:
+            mail:
+                smtp:
+                    auth: false
+                    starttls:
+                        enable: true
+                    connectiontimeout: 5000
+                    timeout: 3000
+                    writetimeout: 5000
+        jndi-name: mail/Session
+name: local-YAML
+environment: local
+enabled: true
+servers: 
+    - www.abc.test.com
+    - www.xyz.test.com
+server:
+    port: 8091
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+name: dev-YAML
+environment: dev
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com
+---
+spring:
+    config:
+        activate:
+            on-profile: test
+name: test-YAML
+environment: test
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+name: prod-YAML
+environment: prod
+enabled: false
+servers: 
+    - www.abc.com
+    - www.xyz.com
