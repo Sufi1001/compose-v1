@@ -22,18 +22,6 @@ services:
 #    depends_on:
 #      - service-jenkins
 
-  service-camunda:
-    image: image-camunda
-    container_name: container-camunda
-    restart: always
-    ports:
-      - 8080:8080
-    build:
-      context: ./config/docker/camunda/
-      dockerfile: ./Dockerfile
-#    depends_on:
-#      - service-nexus
-
   service-postgresql:
     image: image-postgresql
     container_name: container-postgresql
@@ -43,9 +31,27 @@ services:
       context: ./config/docker/postgresql/
       dockerfile: ./Dockerfile
     restart: always
+#    depends_on:
+#      - service-nexus
+
+
+  service-camunda:
+    image: image-camunda
+    container_name: container-camunda
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://service-postgresql:5432/dblocal
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    build:
+      context: ./config/docker/camunda/
+      dockerfile: ./Dockerfile
     depends_on:
-      - service-camunda
-      
+      - service-postgresql
+
   service-rabbitmq:
     image: image-rabbitmq
     container_name: container-rabbitmq
@@ -57,7 +63,7 @@ services:
       - 15672:15672
     restart: always
     depends_on:
-      - service-postgresql
+      - service-camunda
 
   service-mailserver:
     image: image-mailserver
