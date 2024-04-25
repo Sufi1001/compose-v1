@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liquibase-pod
+spec:
+  restartPolicy: Never
+  initContainers:
+  - name: prepare-container-liquibase
+    image: image-liquibase
+    command: ["/bin/sh", "-c"]
+    args:
+      - sleep 15;
+        ls -al /liquibase/;
+        liquibase --defaults-file=/liquibase/liquibase.properties update;
+#    volumeMounts:
+#    - name: liquibase-changelog-volume
+#      mountPath: /liquibase/changelog/
+#    - name: liquibase-properties-volume
+#      mountPath: /liquibase/
+  containers:
+  - name: container-liquibase
+    image: image-liquibase
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+    ports:
+      - containerPort: 8081
+#  volumes:
+#  - name: liquibase-changelog-volume
+#    hostPath: 
+#      path: /backend/app-liquibase/database/changelog/changelog-main-01.sql
+#  - name: liquibase-properties-volume
+#    hostPath: 
+#      path: /backend/app-liquibase/liquibase.properties

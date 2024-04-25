@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-angularcli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-angularcli
+  template:
+    metadata:
+      labels:
+        app: container-angularcli
+    spec:
+      containers:
+        - image: image-angularcli
+          name: container-angularcli
+          ports:
+            - containerPort: 4200
+              hostPort: 4200
+              protocol: TCP

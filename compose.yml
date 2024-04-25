@@ -1,4 +1,3 @@
-version: '3.8'
 services:
 #  service-jenkins:
 #    image: image-jenkins
@@ -22,6 +21,18 @@ services:
 #    depends_on:
 #      - service-jenkins
 
+  service-mysql:
+    image: image-mysql
+    container_name: container-mysql
+    ports:
+      - 3306:3306
+    build:
+      context: ./config/docker/mysql/
+      dockerfile: ./Dockerfile
+    restart: always
+#    depends_on:
+#      - service-nexus
+
   service-postgresql:
     image: image-postgresql
     container_name: container-postgresql
@@ -31,9 +42,38 @@ services:
       context: ./config/docker/postgresql/
       dockerfile: ./Dockerfile
     restart: always
-#    depends_on:
-#      - service-nexus
+    depends_on:
+      - service-mysql
 
+  service-liquibase:
+    image: image-liquibase
+    container_name: container-liquibase
+    build:
+      context: ./config/docker/liquibase/
+      dockerfile: ./Dockerfile
+    volumes:
+      #- ./backend/app-liquibase/lib/:/liquibase/lib/
+      - ./backend/app-liquibase/liquibase.properties:/liquibase/liquibase.properties
+      #- ./backend/app-liquibase/pom.xml:/liquibase/pom.xml
+      - ./backend/app-liquibase/database/changelog/:/liquibase/changelog/
+    command: --defaults-file=/liquibase/liquibase.properties update
+    depends_on:
+      - service-postgresql
+
+  service-nodered:
+    image: image-nodered
+    container_name: container-nodered
+    build:
+      context: ./config/docker/nodered/
+      dockerfile: ./Dockerfile
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - 1880:1880
+    volumes:
+      - ./backend/app-nodered/data:/data
+    depends_on:
+      - service-liquibase
 
   service-camunda:
     image: image-camunda
@@ -41,16 +81,11 @@ services:
     restart: always
     ports:
       - 8080:8080
-    environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_URL: jdbc:postgresql://service-postgresql:5432/dblocal
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
     build:
       context: ./config/docker/camunda/
       dockerfile: ./Dockerfile
     depends_on:
-      - service-postgresql
+      - service-nodered
 
   service-rabbitmq:
     image: image-rabbitmq

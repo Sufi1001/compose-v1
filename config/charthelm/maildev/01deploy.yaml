@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-mailserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-mailserver
+  template:
+    metadata:
+      labels:
+        app: container-mailserver
+    spec:
+      containers:
+        - image: image-mailserver
+          name: container-mailserver
+          ports:
+            - containerPort: 1080
+              hostPort: 1080
+              protocol: TCP
+            - containerPort: 1025
+              hostPort: 1025
+              protocol: TCP

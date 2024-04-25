@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-postgresql
+  template:
+    metadata:
+      labels:
+        app: container-postgresql
+    spec:
+      containers:
+        - image: image-postgresql
+          name: container-postgresql
+          ports:
+            - containerPort: 5432
+      restartPolicy: Always

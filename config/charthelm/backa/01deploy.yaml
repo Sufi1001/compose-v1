@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-springboota
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-springboota
+  template:
+    metadata:
+      labels:
+        app: container-springboota
+    spec:
+      containers:
+        - image: image-springboota
+          name: container-springboota
+          ports:
+            - containerPort: 8090
+              hostPort: 8090
+              protocol: TCP

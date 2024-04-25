@@ -1,4 +1,4 @@
-From postgres
+FROM postgres:alpine3.19
 
 ENV POSTGRES_DB=dblocal
 ENV POSTGRES_PASSWORD=postgres

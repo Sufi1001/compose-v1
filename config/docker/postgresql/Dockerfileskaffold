@@ -1,0 +1,5 @@
+FROM postgres:alpine3.19
+
+ADD pq_dump.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5432

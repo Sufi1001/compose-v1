@@ -1,0 +1,11 @@
+From mysql
+
+ENV MYSQL_DATABASE=mydblocal
+ENV MYSQL_USER=mysql
+ENV MYSQL_PASSWORD=mysql
+ENV MYSQL_ROOT_PASSWORD=mysql
+ENV MYSQL_ALLOW_EMPTY_PASSWORD=1
+
+ADD pq_dump.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306

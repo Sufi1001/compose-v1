@@ -1,0 +1,114 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: app-mailserver
+build:
+  local:
+    useBuildkit: false
+    useDockerCLI: false
+    push: false      # Setting false will not push the image to remote repository
+  artifacts:
+  - image: image-mailserver
+    context: config/docker/mailserver/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-postgresql
+    context: config/docker/postgresql/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-rabbitmq
+    context: config/docker/rabbitmq/
+    docker:
+      dockerfile: Dockerfile-easy
+  - image: image-springboota
+    context: backend/a/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-springbootb
+    context: backend/b/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-angularcli
+    context: frontend/a/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-camunda
+    context: config/docker/camunda/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-liquibase
+    context: backend/app-liquibase/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-mysql
+    context: config/docker/mysql/
+    docker:
+      dockerfile: Dockerfile
+  - image: image-nodered
+    context: config/docker/nodered
+    docker:
+      dockerfile: Dockerfile
+
+deploy:
+  #statusCheckDeadlineSeconds: 300
+  kubeContext: kind-kind
+  kubectl:
+    manifests:
+      - config/charthelm/maildev/*.yaml
+      - config/charthelm/postgres/*.yaml
+      - config/charthelm/mysql/*.yaml
+      - config/charthelm/rabbit/*.yaml
+      - config/charthelm/backa/*.yaml
+      - config/charthelm/backb/01deploy.yaml
+      - config/charthelm/fronta/*.yaml
+      - config/charthelm/camunda/*.yaml
+      - config/charthelm/liquibase/*.yaml
+      - config/charthelm/nodered/*.yaml
+
+portForward:
+  - resourceType: service
+    resourceName: container-mailserver
+    namespace: default
+    port: 1080
+    localPort: 1080
+  - resourceType: service
+    resourceName: container-mysql
+    namespace: default
+    port: 3306
+    localPort: 3306
+  - resourceType: service
+    resourceName: container-postgresql
+    namespace: default
+    port: 5432
+    localPort: 5432
+  - resourceType: service
+    resourceName: container-rabbitmq
+    namespace: default
+    port: 15672
+    localPort: 15672
+  - resourceType: service
+    resourceName: container-springboota
+    namespace: default
+    port: 8090
+    localPort: 8090
+  - resourceType: service
+    resourceName: container-springbootb
+    namespace: default
+    port: 8091
+    localPort: 8091
+  - resourceType: service
+    resourceName: container-angularcli
+    namespace: default
+    port: 4200
+    localPort: 4200
+  - resourceType: service
+    resourceName: container-camunda
+    namespace: default
+    port: 8080
+    localPort: 8080
+  - resourceType: service
+    resourceName: container-nodered
+    namespace: default
+    port: 1880
+    localPort: 1880
+  

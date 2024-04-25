@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: container-rabbitmq
+    spec:
+      containers:
+        - image: image-rabbitmq
+          name: container-rabbitmq
+          ports:
+            - containerPort: 5672
+              hostPort: 5672
+              protocol: TCP
+            - containerPort: 15672
+              hostPort: 15672
+              protocol: TCP
+      restartPolicy: Always

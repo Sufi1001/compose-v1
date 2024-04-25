@@ -1,0 +1,46 @@
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: container-liquibase
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: container-liquibase
+#  template:
+#    metadata:
+#      labels:
+#        app: container-liquibase
+#    spec:
+#      containers:
+#        - image: image-liquibase
+#          name: container-liquibase
+#          command: ["liquibase", "update","--logLevel=debug", "--defaults-file=/liquibase/liquibase.properties",]
+#          volumeMounts:
+#          - name: liquibase-properties-volume
+#            mountPath: ../../../backend/app-liquibase/liquibase.properties
+#          - name: liquibase-jar-volume
+#            mountPath: /liquibase/lib
+#          - name: liquibase-pom-volume
+#            mountPath:  /liquibase
+#          - name: liquibase-changelog-volume
+#            mountPath:  /liquibase/changelog
+#      volumes:
+#      - name: liquibase-properties-volume
+#        hostPath:
+#          path:  # directory location on host
+#          type: Directory # this field is optional
+#      - name: liquibase-jar-volume
+#        hostPath:
+#          path: ./backend/app-liquibase/lib/ # directory location on host
+#          type: Directory # this field is optional
+#      - name: liquibase-pom-volume
+#        hostPath:
+#          path: ./backend/app-liquibase/ # directory location on host
+#          type: Directory # this field is optional
+#      - name: liquibase-changelog-volume
+#        hostPath:
+#          path: ./backend/app-liquibase/database/changelog/ # directory location on host
+#          type: Directory # this field is optional
+#      restartPolicy: Never
+      

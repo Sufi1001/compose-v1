@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: container-springboota
+spec:
+  ports:
+    - name: http
+      port: 8090
+      targetPort: 8090
+  selector:
+    app: container-springboota
+  type: NodePort

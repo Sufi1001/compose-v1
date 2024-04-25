@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-mysql
+  template:
+    metadata:
+      labels:
+        app: container-mysql
+    spec:
+      containers:
+        - image: image-mysql
+          name: container-mysql
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always

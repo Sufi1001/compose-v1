@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-nodered
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-nodered
+  template:
+    metadata:
+      labels:
+        app: container-nodered
+    spec:
+      containers:
+        - image: image-nodered
+          name: container-nodered
+          ports:
+            - containerPort: 1880
+      restartPolicy: Always

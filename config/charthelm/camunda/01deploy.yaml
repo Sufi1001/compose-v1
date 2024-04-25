@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-camunda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-camunda
+  template:
+    metadata:
+      labels:
+        app: container-camunda
+    spec:
+      containers:
+        - image: image-camunda
+          name: container-camunda
+          ports:
+            - containerPort: 8080
+              hostPort: 8080
+              protocol: TCP
+      restartPolicy: Always

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-springbootb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container-springbootb
+  template:
+    metadata:
+      labels:
+        app: container-springbootb
+    spec:
+      containers:
+        - image: image-springbootb
+          name: container-springbootb
+          ports:
+            - containerPort: 8091
+              hostPort: 8091
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: container-springbootb
+spec:
+  ports:
+    - name: http
+      port: 8091
+      targetPort: 8091
+  selector:
+    app: container-springbootb
+  type: NodePort
+
